@@ -21,7 +21,17 @@ app.use(
 app.use(
   cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL
+    origin: (origin, callback) => {
+      if (process.env.NODE_ENV === "production") {
+        if (origin === process.env.FRONTEND_URL) {
+          return callback(null, true);
+        } else {
+          return callback(new Error("Not allowed by CORS"));
+        }
+      } else {
+        return callback(null, true);
+      }
+    }
   })
 );
 
