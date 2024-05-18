@@ -1,0 +1,33 @@
+services:
+  database:
+    image: stunning-dollop-database-dev-i
+    build:
+      dockerfile: Dockerfile.dev
+    container_name: stunning-dollop-database-dev-c
+    volumes:
+      - ./database/data:/var/lib/mysql
+    env_file:
+      - ./database/.env
+    ports:
+      - "3306:3306"
+    networks:
+      - stunning-dollop-network
+  # backend:
+  #   image: stunning-dollop-backend-dev-i
+  #   build:
+  #     dockerfile: Dockerfile.dev
+  #   container_name: stunning-dollop-backend-dev-c
+  #   volumes:
+  #     - ./backend:/backend
+  #     - stunning_dollop_node_modules_backend:/backend/node_modules/
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - stunning-dollop-network
+  #   depends_on:
+  #     - database
+networks:
+  stunning-dollop-network:
+    driver: bridge
+# volumes:
+#   stunning_dollop_node_modules_backend:
