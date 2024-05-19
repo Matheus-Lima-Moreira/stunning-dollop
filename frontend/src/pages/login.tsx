@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import '../styles/pages/login.scss';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Login() {
-  const navigate = useNavigate();                                                                                                                                                                                                                                                                                                                                                                                    
-  const [email, setEmail] = useState('');                                                   
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,16 +21,20 @@ function Login() {
     e.preventDefault();
 
     try {
-      const user = await api.post('/login', {
+      const data = await api.post('/login', {
         email: email,
         password: password
       });
 
-      console.log(user);
-
-      //navigate('/users');
+      if (data) {
+        navigate('/users');
+      }
     } catch (error: any) {
-      console.log(error?.message)
+      toast.error(
+        error?.response?.data?.message || 
+        error?.response?.data?.error || 
+        error?.message
+      );
     }
   };
 
@@ -46,6 +51,12 @@ function Login() {
         </div>
         <button type="submit">Submit</button>
       </div>
+      <ToastContainer 
+        closeOnClick={true}
+        position='bottom-right'
+        hideProgressBar={false}
+        closeButton={false}
+      />
     </form>
   );
 }
