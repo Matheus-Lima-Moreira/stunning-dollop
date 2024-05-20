@@ -3,6 +3,7 @@ import '../scss/pages/users.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import api from '../services/api';
 import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface Users {
   id: number;
@@ -17,7 +18,8 @@ const Users = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const { handleLogout } = useAuth();
+  const { handleLogout, isAuth, loading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUsers() {
@@ -35,6 +37,10 @@ const Users = () => {
 
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    if (!isAuth && !loading) navigate('/login');
+  }, [isAuth, loading]);
 
   useEffect(() => {
     async function fetchUser() {
@@ -83,8 +89,6 @@ const Users = () => {
           email,
           password
         });
-
-        console.log(data)
 
         const newUsers = users.map((user: Users) => {
           if (user.id === userSelectedId) {
