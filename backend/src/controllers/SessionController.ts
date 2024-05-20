@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import AuthUserService from "../services/AuthServices/AuthUserService";
 import { SendRefreshToken } from "../helpers/SendRefreshToken";
 import { logger } from "../utils/logger";
+import { RefreshTokenService } from "../services/AuthServices/RefreshTokenService";
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
   const { email, password } = req.body;
@@ -26,6 +27,26 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
   } catch (error) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
+};
+
+export const update = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const token: string = req?.cookies?.jrt;
+
+  if (!token) {
+    return res.json({ message: "No token provided!" });
+  }
+
+  const { user, newToken, refreshToken } = await RefreshTokenService(res, token);
+
+  SendRefreshToken(res, refreshToken);
+
+  return res.json({
+    token: newToken,
+    user
+  });
 };
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
