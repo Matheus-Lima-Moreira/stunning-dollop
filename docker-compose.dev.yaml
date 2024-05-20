@@ -12,22 +12,39 @@ services:
       - "3306:3306"
     networks:
       - stunning-dollop-network
-  # backend:
-  #   image: stunning-dollop-backend-dev-i
-  #   build:
-  #     dockerfile: Dockerfile.dev
-  #   container_name: stunning-dollop-backend-dev-c
-  #   volumes:
-  #     - ./backend:/backend
-  #     - stunning_dollop_node_modules_backend:/backend/node_modules/
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - stunning-dollop-network
-  #   depends_on:
-  #     - database
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  frontend:
+    image: stunning-dollop-frontend-dev-i
+    build:
+      dockerfile: Dockerfile.dev
+    container_name: stunning-dollop-frontend-dev-c
+    volumes:
+      - ./frontend:/frontend
+      - stunning_dollop_node_modules_frontend:/frontend/node_modules/
+    ports:
+      - "5173:5173"
+  backend:
+    image: stunning-dollop-backend-dev-i
+    build:
+      dockerfile: Dockerfile.dev
+    container_name: stunning-dollop-backend-dev-c
+    volumes:
+      - ./backend:/backend
+      - stunning_dollop_node_modules_backend:/backend/node_modules/
+    ports:
+      - "8080:8080"
+    networks:
+      - stunning-dollop-network
+    depends_on:
+      database:
+        condition: service_healthy
 networks:
   stunning-dollop-network:
     driver: bridge
-# volumes:
-#   stunning_dollop_node_modules_backend:
+volumes:
+  stunning_dollop_node_modules_frontend:
+  stunning_dollop_node_modules_backend:

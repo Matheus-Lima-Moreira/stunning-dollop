@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon --legacy-watch src/server.ts",
     "start": "nodemon dist/server.js",
-    "prisma-migrations": "npx prisma migrate dev --name init --schema ./src/prisma/schema.prisma"
+    "prisma-migrations": "npx prisma migrate dev --name init --schema ./src/prisma/schema.prisma",
+    "start:migrate:dev": "npx prisma migrate dev --name init --schema ./src/prisma/schema.prisma && nodemon --legacy-watch src/server.ts"
   },
   "repository": {
     "type": "git",

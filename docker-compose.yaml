@@ -2,6 +2,9 @@ services:
   database:
     build:
       context: ./database
-  # backend:
-  #   build:
-  #     context: ./backend
+  frontend:
+    build:
+      context: ./frontend
+  backend:
+    build:
+      context: ./backend
