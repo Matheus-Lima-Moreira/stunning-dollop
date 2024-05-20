@@ -8,4 +8,4 @@ To use this project, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/Matheus-Lima-Moreira/stunning-dollop`
 2. Navigate to the project directory: `cd stunning-dollop`
-3. Use docker-compose to build and run the project on development mode: : `docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build`
+3. Use docker-compose to build and run the project on development mode: : `docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up`
