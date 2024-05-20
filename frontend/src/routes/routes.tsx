@@ -1,24 +1,18 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Route, Routes as RoutesReact } from 'react-router-dom'
 import Login from '../pages/login'
 import Users from '../pages/users';
-
-const router = createBrowserRouter([
-  {
-    path: 'login',
-    Component: Login
-  },
-  {
-    path: 'users',
-    Component: Users
-  },
-  {
-    ErrorBoundary: Login
-  }
-]);
+import { AuthProvider } from "../context/Auth/AuthContext";
 
 const Routes = () => {
   return (
-    <RouterProvider router={router} />
+    <BrowserRouter>
+      <AuthProvider>
+        <RoutesReact>
+          <Route path='*' Component={Login} />
+          <Route path='users' Component={Users} />
+        </RoutesReact>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 

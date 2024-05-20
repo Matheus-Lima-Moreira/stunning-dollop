@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import '../styles/pages/login.scss';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import { ToastContainer, toast } from 'react-toastify';
+import '../scss/pages/login.scss';
+import { ToastContainer } from 'react-toastify';
+import useAuth from '../hooks/useAuth';
 
 function Login() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { handleLogin } = useAuth();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -20,22 +19,7 @@ function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const data = await api.post('/login', {
-        email: email,
-        password: password
-      });
-
-      if (data) {
-        navigate('/users');
-      }
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || 
-        error?.response?.data?.error || 
-        error?.message
-      );
-    }
+    handleLogin({ email, password });
   };
 
   return (
@@ -51,7 +35,7 @@ function Login() {
         </div>
         <button type="submit">Submit</button>
       </div>
-      <ToastContainer 
+      <ToastContainer
         closeOnClick={true}
         position='bottom-right'
         hideProgressBar={false}
