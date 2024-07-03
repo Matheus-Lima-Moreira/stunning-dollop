@@ -12,11 +12,6 @@ services:
       - "3306:3306"
     networks:
       - stunning-dollop-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
   frontend:
     image: stunning-dollop-frontend-dev-i
     build:
@@ -40,8 +35,7 @@ services:
     networks:
       - stunning-dollop-network
     depends_on:
-      database:
-        condition: service_healthy
+      - database
 networks:
   stunning-dollop-network:
     driver: bridge

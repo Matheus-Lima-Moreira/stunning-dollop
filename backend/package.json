@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --legacy-watch src/server.ts",
     "start": "nodemon dist/server.js",
+    "build": "npx prisma migrate dev --name init --schema ./src/prisma/schema.prisma && tsc",
     "prisma-migrations": "npx prisma migrate dev --name init --schema ./src/prisma/schema.prisma",
     "start:migrate:dev": "npx prisma migrate dev --name init --schema ./src/prisma/schema.prisma && nodemon --legacy-watch src/server.ts"
   },

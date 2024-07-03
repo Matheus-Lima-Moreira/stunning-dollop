@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../scss/pages/users.scss';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import api from '../services/api';
-import useAuth from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 
 interface Users {
   id: number;
@@ -17,9 +15,7 @@ const Users = () => {
   const [userSelectedId, setUserSelectedId] = useState(0);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const { handleLogout, isAuth, loading } = useAuth();
-  const navigate = useNavigate();
+  const [password, setPassword] = useState('');  
 
   useEffect(() => {
     async function fetchUsers() {
@@ -37,10 +33,6 @@ const Users = () => {
 
     fetchUsers();
   }, []);
-
-  useEffect(() => {
-    if (!isAuth && !loading) navigate('/login');
-  }, [isAuth, loading]);
 
   useEffect(() => {
     async function fetchUser() {
@@ -133,17 +125,7 @@ const Users = () => {
   return (
     <div className='user-list'>
       <div className='users-wrapper'>
-        <h1 className='user-title'>Users</h1>
-
         <div className='user-actions'>
-          <button
-            className='button logout'
-            type='button'
-            onClick={() => handleLogout()}
-          >
-            Logout
-          </button>
-
           <button
             className='button'
             type='button'
@@ -222,13 +204,6 @@ const Users = () => {
           ))}
         </tbody>
       </table>
-
-      <ToastContainer
-        closeOnClick={true}
-        position='bottom-right'
-        hideProgressBar={false}
-        closeButton={false}
-      />
     </div>
   )
 }

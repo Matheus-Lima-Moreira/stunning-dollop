@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import '../scss/pages/login.scss';
-import { ToastContainer } from 'react-toastify';
-import useAuth from '../hooks/useAuth';
+import React, { useState } from "react";
+import "../scss/pages/login.scss";
+import useAuth from "../hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { handleLogin } = useAuth();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,24 +26,28 @@ function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='login-form'>
-      <div className='login-form-wrapper-components'>
-        <div className='field-wrapper'>
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email" value={email} onChange={handleEmailChange} />
-        </div>
-        <div className='field-wrapper'>
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" value={password} onChange={handlePasswordChange} />
-        </div>
-        <button type="submit">Submit</button>
-      </div>
-      <ToastContainer
-        closeOnClick={true}
-        position='bottom-right'
-        hideProgressBar={false}
-        closeButton={false}
-      />
+    <form onSubmit={handleSubmit} className="login-form">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardDescription>Enter your email below to login to your account.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" placeholder="email@example.com" required value={email} onChange={handleEmailChange} />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" required value={password} onChange={handlePasswordChange} />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full" type="submit">
+            Sign in
+          </Button>
+        </CardFooter>
+      </Card>
     </form>
   );
 }

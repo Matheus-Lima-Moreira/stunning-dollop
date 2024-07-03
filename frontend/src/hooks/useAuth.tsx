@@ -99,7 +99,7 @@ const useAuth = () => {
       setIsAuth(true);
       toast.success("Login efetuado com sucesso!");
 
-      navigate('/users');
+      navigate('/');
 
       setLoading(false);
     } catch (error: any) {
