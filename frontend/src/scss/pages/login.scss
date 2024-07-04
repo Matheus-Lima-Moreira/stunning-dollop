@@ -29,9 +29,8 @@
 .login-form input:-webkit-autofill:hover,
 .login-form input:-webkit-autofill:focus,
 .login-form input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
-  box-shadow: 0 0 0 30px transparent inset !important;
   -webkit-text-fill-color: var(--black-or-white) !important;
+  caret-color: var(--black-or-white) !important; /* Adiciona esta linha */
   transition: background-color 5000s ease-in-out 0s;
 }
 

@@ -36,21 +36,21 @@ function Login() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>Enter your email below to login to your account.</CardDescription>
+          <CardDescription>Insira suas credenciais para acessar o sistema</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-mail</Label>
             <Input id="email" type="email" placeholder="email@example.com" required value={email} onChange={handleEmailChange} />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Senha</Label>
             <Input id="password" type="password" required value={password} onChange={handlePasswordChange} />
           </div>
         </CardContent>
         <CardFooter>
           <Button className="w-full" type="submit">
-            Sign in
+            Entrar
           </Button>
         </CardFooter>
       </Card>

@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./scss/global.scss";
 import Routes from "./routes/routes.tsx";
-import "react-toastify/dist/ReactToastify.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/react-query.ts";
 

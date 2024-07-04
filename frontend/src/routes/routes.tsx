@@ -2,10 +2,10 @@ import { BrowserRouter, Route, Routes as RoutesReact } from "react-router-dom";
 import Login from "../pages/login";
 import Users from "../pages/users";
 import { AuthProvider } from "../context/Auth/AuthContext";
-import { ToastContainer } from "react-toastify";
 import Layout from "@/pages/layout";
 import Home from "@/pages/home";
 import { ThemeProvider } from "@/context/Theme/ThemeContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const Routes = () => {
   return (
@@ -34,7 +34,7 @@ const Routes = () => {
             />
           </RoutesReact>
 
-          <ToastContainer autoClose={3000} closeOnClick={true} position="bottom-right" hideProgressBar={true} closeButton={false} />
+          <Toaster />
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -3,6 +3,7 @@ import routes from './routes';
 import dotenv from "dotenv";
 import cors from "cors";
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.use(
     }
   })
 );
+
+app.use(cookieParser());
 
 app.use(express.json());
 

@@ -1,18 +1,26 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import api from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 interface LoginData {
   email: string;
   password: string;
 }
 
+interface LoggedInUser {
+  id: number;
+  email: string;
+  name: string;
+  password: string;
+}
+
 const useAuth = () => {
   const [isAuth, setIsAuth] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<LoggedInUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   api.interceptors.request.use(
     (config) => {
@@ -39,10 +47,7 @@ const useAuth = () => {
     async (error) => {
       const originalRequest = error.config;
 
-      if (
-        error?.response?.status === 403 &&
-        !originalRequest._retry
-      ) {
+      if (error?.response?.status === 403 && !originalRequest._retry) {
         originalRequest._retry = true;
 
         const { data } = await api.post(`/auth/refresh_token`);
@@ -57,7 +62,7 @@ const useAuth = () => {
 
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
-        api.defaults.headers.Authorization = '';
+        api.defaults.headers.Authorization = "";
         setIsAuth(false);
       }
 
@@ -76,11 +81,7 @@ const useAuth = () => {
           setIsAuth(true);
           setUser(data.user);
         } catch (error: any) {
-          toast.error(
-            error?.response?.data?.message ||
-            error?.response?.data?.error ||
-            error?.message
-          );
+          toast({ title: error?.response?.data?.message || error?.response?.data?.error || error?.message });
         }
       }
       setLoading(false);
@@ -95,19 +96,19 @@ const useAuth = () => {
 
       localStorage.setItem("token", JSON.stringify(data.token));
       api.defaults.headers.Authorization = `Bearer ${data.token}`;
+      console.log("data.user", data.user);
+
       setUser(data.user);
       setIsAuth(true);
-      toast.success("Login efetuado com sucesso!");
+      toast({
+        title: "Login efetuado com sucesso!",
+      });
 
-      navigate('/');
+      navigate("/");
 
       setLoading(false);
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        error?.message
-      );
+      toast({ title: error?.response?.data?.message || error?.response?.data?.error || error?.message });
       setLoading(false);
     }
   };
@@ -119,17 +120,13 @@ const useAuth = () => {
       await api.delete("/logout");
 
       localStorage.removeItem("token");
-      api.defaults.headers.Authorization = '';
+      api.defaults.headers.Authorization = "";
 
-      navigate('/login');
+      navigate("/login");
 
       setLoading(false);
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        error?.message
-      );
+      toast({ title: error?.response?.data?.message || error?.response?.data?.error || error?.message });
       setLoading(false);
     }
   };
@@ -139,7 +136,7 @@ const useAuth = () => {
     user,
     loading,
     handleLogin,
-    handleLogout
+    handleLogout,
   };
 };
 

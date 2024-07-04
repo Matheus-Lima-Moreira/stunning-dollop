@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import api from "@/services/api";
-import { toast } from "react-toastify";
 import "../../scss/components/dialogs/user_dialog.scss";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useToast } from "../ui/use-toast";
 
 interface UserCreateData {
   name: string;
@@ -36,6 +36,7 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
     },
     enabled: !!userSelectedId && isOpen,
   });
+  const { toast } = useToast();
 
   const { mutateAsync: createUser } = useMutation({
     mutationFn: async ({ name, email, password }: UserCreateData) => {
@@ -54,12 +55,12 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
         return [...data, userCreated];
       });
 
-      toast.success("Usuário criado com sucesso!");
+      toast({ title: "Usuário criado com sucesso!" });
       handleClose();
     },
     onError: (error: AxiosError) => {
       const errorData = error?.response?.data as any;
-      toast.error(errorData?.error || errorData?.message || error?.message);
+      toast({ title: errorData?.error || errorData?.message || error?.message });
     },
   });
 
@@ -86,19 +87,19 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
         });
       });
 
-      toast.success("Usuário atualizado com sucesso!");
+      toast({ title: "Usuário atualizado com sucesso!" });
       handleClose();
     },
     onError: (error: AxiosError) => {
       const errorData = error?.response?.data as any;
-      toast.error(errorData?.error || errorData?.message || error?.message);
+      toast({ title: errorData?.error || errorData?.message || error?.message });
     },
   });
 
   useEffect(() => {
     if (isOpen && userSelectedId) {
       if (status === "error") {
-        toast.error(error?.message);
+        toast({ title: error?.message });
       }
 
       if (status === "success") {
@@ -111,7 +112,7 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
 
   useEffect(() => {
     if (status === "error") {
-      toast.error(error?.message);
+      toast({ title: error?.message });
     }
 
     if (status === "success") {
@@ -159,15 +160,15 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
             <div className="content">
               <div className="field-wrapper">
                 <Label htmlFor="name">Nome</Label>
-                <Input type="text" id="name" className="col-span-3" value={name} onChange={(e) => setName(e.target.value)} />
+                <Input type="text" id="name" className="col-span-3" value={name} onChange={(e) => setName(e.target.value)} required />
               </div>
               <div className="field-wrapper">
                 <Label htmlFor="email">E-mail</Label>
-                <Input type="email" id="email" className="col-span-3" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <Input type="email" id="email" className="col-span-3" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
               <div className="field-wrapper">
                 <Label htmlFor="password">Senha</Label>
-                <Input type="password" id="password" className="col-span-3" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Input type="password" id="password" className="col-span-3" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
             </div>
           </div>

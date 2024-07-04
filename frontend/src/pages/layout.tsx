@@ -98,7 +98,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           </nav>
         </aside>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col overflow-auto">
           <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
             <h1 className="text-xl font-semibold">{getRouteName()}</h1>
           </header>

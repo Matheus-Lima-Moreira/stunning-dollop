@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "../scss/pages/users.scss";
-import { toast } from "react-toastify";
 import api from "../services/api";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,6 +7,7 @@ import UserDialog from "@/components/dialogs/userDialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AxiosError } from "axios";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Users {
   id: number;
@@ -31,6 +31,7 @@ const Users = () => {
       return data;
     },
   });
+  const { toast } = useToast();
 
   const { mutateAsync: deleteUser } = useMutation({
     mutationFn: async (id: number) => {
@@ -41,17 +42,17 @@ const Users = () => {
         return data.filter((user: Users) => user.id !== id);
       });
 
-      toast.success("Usuário deletado com sucesso!");
+      toast({ title: "Usuário deletado com sucesso!" });
     },
     onError: (error: AxiosError) => {
       const errorData = error?.response?.data as any;
-      toast.error(errorData?.message || errorData?.error || error?.message);
+      toast({ title: errorData?.message || errorData?.error || error?.message });
     },
   });
 
   useEffect(() => {
     if (status === "error") {
-      toast.error(error?.message);
+      toast({ title: error?.message });
     }
   }, [status]);
 
@@ -124,14 +125,16 @@ const Users = () => {
                 <TableCell className="font-medium">{user.id}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell className="table-actions">
-                  <Button className="edit-button" type="button" onClick={() => handleEdit(user.id)}>
-                    Editar
-                  </Button>
+                <TableCell>
+                  <div className="table-actions">
+                    <Button className="edit-button" type="button" onClick={() => handleEdit(user.id)}>
+                      Editar
+                    </Button>
 
-                  <Button className="delete-button" type="button" onClick={() => handleDelete(user.id)}>
-                    Deletar
-                  </Button>
+                    <Button className="delete-button" type="button" onClick={() => handleDelete(user.id)}>
+                      Deletar
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
