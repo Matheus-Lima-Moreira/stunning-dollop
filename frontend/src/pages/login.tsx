@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../scss/pages/login.scss";
 import useAuth from "../hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleLogin } = useAuth();
+  const { handleLogin, isAuth, loading } = useAuth();
+  const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -24,6 +26,10 @@ function Login() {
 
     handleLogin({ email, password });
   };
+
+  useEffect(() => {
+    if (isAuth && !loading) navigate("/");
+  }, [isAuth, loading]);
 
   return (
     <form onSubmit={handleSubmit} className="login-form">
