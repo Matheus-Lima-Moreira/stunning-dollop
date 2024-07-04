@@ -6,74 +6,137 @@ import { Button } from "../ui/button";
 import api from "@/services/api";
 import { toast } from "react-toastify";
 import "../../scss/components/dialogs/user_dialog.scss";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+
+interface UserCreateData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface UserUpdateData extends UserCreateData {
+  id: number;
+}
 
 const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; userSelectedId?: number; onClose: () => void }) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const queryClient = useQueryClient();
+  const {
+    data: user,
+    error,
+    status,
+  } = useQuery({
+    queryKey: ["show-user", userSelectedId],
+    queryFn: async () => {
+      const { data } = await api.get(`/users/${userSelectedId}`);
+      return data;
+    },
+    enabled: !!userSelectedId && isOpen,
+  });
+
+  const { mutateAsync: createUser } = useMutation({
+    mutationFn: async ({ name, email, password }: UserCreateData) => {
+      const { data } = await api.post("/users", {
+        name,
+        email,
+        password,
+      });
+
+      return data;
+    },
+    onSuccess: (data) => {
+      const userCreated = data?.user;
+
+      queryClient.setQueryData(["list-users"], (data: any) => {
+        return [...data, userCreated];
+      });
+
+      toast.success("Usuário criado com sucesso!");
+      handleClose();
+    },
+    onError: (error: AxiosError) => {
+      const errorData = error?.response?.data as any;
+      toast.error(errorData?.error || errorData?.message || error?.message);
+    },
+  });
+
+  const { mutateAsync: updateUser } = useMutation({
+    mutationFn: async ({ id, name, email, password }: UserUpdateData) => {
+      const { data } = await api.put(`/users/${id}`, {
+        name,
+        email,
+        password,
+      });
+
+      return data;
+    },
+    onSuccess: (data) => {
+      const userUpdated = data?.user;
+
+      queryClient.setQueryData(["list-users"], (data: any) => {
+        return data.map((user: any) => {
+          if (user.id === userUpdated.id) {
+            return userUpdated;
+          }
+
+          return user;
+        });
+      });
+
+      toast.success("Usuário atualizado com sucesso!");
+      handleClose();
+    },
+    onError: (error: AxiosError) => {
+      const errorData = error?.response?.data as any;
+      toast.error(errorData?.error || errorData?.message || error?.message);
+    },
+  });
 
   useEffect(() => {
-    async function fetchUser() {
-      try {
-        const { data } = await api.get(`/users/${userSelectedId}`);
-        const user = data as any;
+    if (isOpen && userSelectedId) {
+      if (status === "error") {
+        toast.error(error?.message);
+      }
+
+      if (status === "success") {
         setName(user.name);
         setEmail(user.email);
         setPassword(user.password);
-      } catch (error: any) {
-        toast.error(error?.response?.data?.message || error?.response?.data?.error || error?.message);
       }
     }
+  }, [isOpen, userSelectedId]);
 
-    if (userSelectedId && isOpen) {
-      fetchUser();
+  useEffect(() => {
+    if (status === "error") {
+      toast.error(error?.message);
     }
-  }, [userSelectedId, isOpen]);
+
+    if (status === "success") {
+      setName(user.name);
+      setEmail(user.email);
+      setPassword(user.password);
+    }
+  }, [status]);
 
   const handleSubmitUserForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      if (userSelectedId) {
-        const { data } = await api.put(`/users/${userSelectedId}`, {
-          name,
-          email,
-          password,
-        });
-
-        // const newUsers = users.map((user: Users) => {
-        //   if (user.id === userSelectedId) {
-        //     return {
-        //       id: user.id,
-        //       name: data.user.name,
-        //       email: data.user.email,
-        //     } as Users;
-        //   }
-
-        //   return user;
-        // });
-
-        // setUsers(newUsers);
-        toast.success("User updated successfully!");
-      } else {
-        const { data } = await api.post("/users", {
-          name,
-          email,
-          password,
-        });
-
-        const userCreated = data.user as never;
-        // setUsers([...users, userCreated]);
-
-        toast.success("User created successfully!");
-      }
-
-      setName("");
-      setEmail("");
-      setPassword("");
-      handleClose();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || error?.response?.data?.error || error?.message);
+    if (userSelectedId) {
+      updateUser({
+        id: userSelectedId,
+        name,
+        email,
+        password,
+      });
+    } else {
+      createUser({
+        name,
+        email,
+        password,
+      });
     }
   };
 
