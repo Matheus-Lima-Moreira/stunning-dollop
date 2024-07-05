@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisibility] = useState(false);
   const { handleLogin, isAuth, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -25,6 +27,10 @@ function Login() {
     e.preventDefault();
 
     handleLogin({ email, password });
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(!passwordVisible);
   };
 
   useEffect(() => {
@@ -45,7 +51,12 @@ function Login() {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Senha</Label>
-            <Input id="password" type="password" required value={password} onChange={handlePasswordChange} />
+            <div className="relative">
+              <Input id="password" type={passwordVisible ? "text" : "password"} required value={password} onChange={handlePasswordChange} className="!pr-11" />
+              <Button className="adornment-end absolute right-0 top-0 hover:bg-transparent bg-transparent text-inherit size-11 h-[2.5rem]" type="button" size="sm" onClick={togglePasswordVisibility}>
+                {passwordVisible ? <EyeOff /> : <Eye />}
+              </Button>
+            </div>
           </div>
         </CardContent>
         <CardFooter>

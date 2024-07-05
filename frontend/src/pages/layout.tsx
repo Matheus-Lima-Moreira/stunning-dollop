@@ -21,6 +21,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
         return "Início";
       case "/users":
         return "Usuários";
+      case "/profile":
+        return "Minha Conta";
       default:
         return "";
     }
@@ -60,18 +62,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             </Tooltip>
           </nav>
 
-          <nav className="mt-auto grid gap-1 p-2">
-            {/* <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="mt-auto rounded-lg" aria-label="Account">
-                  <SquareUser className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Account
-              </TooltipContent>
-            </Tooltip> */}
-            
+          <nav className="mt-auto grid gap-1 p-2">          
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" className="mt-auto rounded-lg" aria-label="Modo Escuro" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
@@ -82,6 +73,17 @@ const Layout = ({ children }: { children: ReactNode }) => {
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
                 {theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className={`mt-auto rounded-lg ${location.pathname === "/profile" ? "bg-muted" : ""}`} aria-label="Minha Conta" onClick={() => navigate("/profile")}>
+                  <SquareUser className="size-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={5}>
+                Minha Conta
               </TooltipContent>
             </Tooltip>
 

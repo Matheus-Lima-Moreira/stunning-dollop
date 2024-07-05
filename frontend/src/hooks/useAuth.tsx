@@ -3,18 +3,6 @@ import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
-interface LoginData {
-  email: string;
-  password: string;
-}
-
-interface LoggedInUser {
-  id: number;
-  email: string;
-  name: string;
-  password: string;
-}
-
 const useAuth = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [user, setUser] = useState<LoggedInUser | null>(null);
@@ -137,6 +125,7 @@ const useAuth = () => {
     loading,
     handleLogin,
     handleLogout,
+    setUser
   };
 };
 

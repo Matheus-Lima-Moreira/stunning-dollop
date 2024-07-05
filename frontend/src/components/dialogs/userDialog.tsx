@@ -8,21 +8,13 @@ import "../../scss/components/dialogs/user_dialog.scss";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useToast } from "../ui/use-toast";
-
-interface UserCreateData {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface UserUpdateData extends UserCreateData {
-  id: number;
-}
+import { Eye, EyeOff } from "lucide-react";
 
 const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; userSelectedId?: number; onClose: () => void }) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisibility] = useState(false);
   const queryClient = useQueryClient();
   const {
     data: user,
@@ -148,6 +140,10 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
     onClose();
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(!passwordVisible);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
@@ -168,7 +164,12 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
               </div>
               <div className="field-wrapper">
                 <Label htmlFor="password">Senha</Label>
-                <Input type="password" id="password" className="col-span-3" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <div className="relative">
+                  <Input type={passwordVisible ? "text" : "password"} id="password" className="col-span-3 !pr-11" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                  <Button className="adornment-end absolute right-0 top-0 hover:bg-transparent bg-transparent text-inherit size-11 h-[2.5rem]" type="button" size="sm" onClick={togglePasswordVisibility}>
+                    {passwordVisible ? <EyeOff /> : <Eye />}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

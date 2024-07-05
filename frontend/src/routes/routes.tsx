@@ -6,6 +6,8 @@ import Layout from "@/pages/layout";
 import Home from "@/pages/home";
 import { ThemeProvider } from "@/context/Theme/ThemeContext";
 import { Toaster } from "@/components/ui/toaster";
+import NotFound from "@/pages/notFound";
+import MyAccount from "@/pages/myAccount";
 
 const Routes = () => {
   return (
@@ -13,7 +15,9 @@ const Routes = () => {
       <AuthProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <RoutesReact>
-            <Route path="*" Component={Login} />
+            <Route path="/login" Component={Login} />
+
+            <Route path="*" Component={NotFound} />
 
             <Route
               path="/"
@@ -29,6 +33,15 @@ const Routes = () => {
               element={
                 <Layout>
                   <Users />
+                </Layout>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <Layout>
+                  <MyAccount />
                 </Layout>
               }
             />
