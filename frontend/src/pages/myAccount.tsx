@@ -11,17 +11,20 @@ import React, { useContext, useEffect, useState } from "react";
 
 const MyAccount = () => {
   const { user, setUser } = useContext(AuthContext);
+  const [userId, setUserId] = useState(user?.id || 0);
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [password, setPassword] = useState(user?.password || "");
+  const [userRoleId, setUserRoleId] = useState(user?.role.id || 0);
   const [passwordVisible, setPasswordVisibility] = useState(false);
 
   const { mutateAsync: updateMyUser } = useMutation({
-    mutationFn: async ({ id, name, email, password }: UserUpdateData) => {
+    mutationFn: async ({ id, name, email, password, roleId }: UserUpdateData) => {
       const { data } = await api.put(`/users/${id}`, {
         name,
         email,
         password,
+        roleId
       });
 
       return data;
@@ -54,7 +57,8 @@ const MyAccount = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    updateMyUser({ id: user!.id, name, email, password });
+    console.log({ id: userId, name, email, password, roleId: userRoleId });
+    updateMyUser({ id: userId, name, email, password, roleId: userRoleId });
   };
 
   const togglePasswordVisibility = () => {
@@ -62,9 +66,11 @@ const MyAccount = () => {
   };
 
   useEffect(() => {
+    setUserId(user?.id || 0);
     setName(user?.name || "");
     setEmail(user?.email || "");
     setPassword(user?.password || "");
+    setUserRoleId(user?.role.id || 0);
   }, [user]);
 
   return (
@@ -72,19 +78,19 @@ const MyAccount = () => {
       <form onSubmit={handleSubmit}>
         <h1 className="text-2xl font-bold mb-4">Alterar Dados</h1>
         <div className="mb-4">
-          <Label htmlFor="name" className="block mb-2">
+          <Label htmlFor="name" className="block mb-1">
             Nome
           </Label>
           <Input type="text" id="name" value={name} onChange={handleNameChange} />
         </div>
         <div className="mb-4">
-          <Label htmlFor="email" className="block mb-2">
+          <Label htmlFor="email" className="block mb-1">
             E-mail
           </Label>
           <Input type="email" id="email" value={email} onChange={handleEmailChange} />
         </div>
         <div className="mb-4">
-          <Label htmlFor="password" className="block mb-2">
+          <Label htmlFor="password" className="block mb-1">
             Senha
           </Label>
           <div className="relative">

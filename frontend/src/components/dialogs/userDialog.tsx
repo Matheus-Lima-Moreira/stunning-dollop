@@ -9,12 +9,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useToast } from "../ui/use-toast";
 import { Eye, EyeOff } from "lucide-react";
+import RoleSelect from "../RoleSelect";
 
 const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; userSelectedId?: number; onClose: () => void }) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisibility] = useState(false);
+  const [roleId, setRoleId] = useState("");
   const queryClient = useQueryClient();
   const {
     data: user,
@@ -31,11 +33,12 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
   const { toast } = useToast();
 
   const { mutateAsync: createUser } = useMutation({
-    mutationFn: async ({ name, email, password }: UserCreateData) => {
+    mutationFn: async ({ name, email, password, roleId }: UserCreateData) => {
       const { data } = await api.post("/users", {
         name,
         email,
         password,
+        roleId
       });
 
       return data;
@@ -57,11 +60,12 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
   });
 
   const { mutateAsync: updateUser } = useMutation({
-    mutationFn: async ({ id, name, email, password }: UserUpdateData) => {
+    mutationFn: async ({ id, name, email, password, roleId }: UserUpdateData) => {
       const { data } = await api.put(`/users/${id}`, {
         name,
         email,
         password,
+        roleId
       });
 
       return data;
@@ -98,9 +102,10 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
         setName(user.name);
         setEmail(user.email);
         setPassword(user.password);
+        setRoleId(user.roleId.toString());
       }
     }
-  }, [isOpen, userSelectedId]);
+  }, [isOpen, userSelectedId, user]);
 
   useEffect(() => {
     if (status === "error") {
@@ -111,8 +116,9 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
       setName(user.name);
       setEmail(user.email);
       setPassword(user.password);
+      setRoleId(user.roleId.toString());
     }
-  }, [status]);
+  }, [status, user]);
 
   const handleSubmitUserForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,12 +129,14 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
         name,
         email,
         password,
+        roleId: Number(roleId)
       });
     } else {
       createUser({
         name,
         email,
         password,
+        roleId: Number(roleId)
       });
     }
   };
@@ -137,6 +145,7 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
     setName("");
     setEmail("");
     setPassword("");
+    setRoleId("");
     onClose();
   };
 
@@ -155,15 +164,23 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
           <div className="user-form">
             <div className="content">
               <div className="field-wrapper">
-                <Label htmlFor="name">Nome</Label>
+                <Label htmlFor="name" className="block mb-1">
+                  Nome
+                </Label>
                 <Input type="text" id="name" className="col-span-3" value={name} onChange={(e) => setName(e.target.value)} required />
               </div>
+
               <div className="field-wrapper">
-                <Label htmlFor="email">E-mail</Label>
+                <Label htmlFor="email" className="block mb-1">
+                  E-mail
+                </Label>
                 <Input type="email" id="email" className="col-span-3" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
+
               <div className="field-wrapper">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="password" className="block mb-1">
+                  Senha
+                </Label>
                 <div className="relative">
                   <Input type={passwordVisible ? "text" : "password"} id="password" className="col-span-3 !pr-11" value={password} onChange={(e) => setPassword(e.target.value)} required />
                   <Button className="adornment-end absolute right-0 top-0 hover:bg-transparent bg-transparent text-inherit size-11 h-[2.5rem]" type="button" size="sm" onClick={togglePasswordVisibility}>
@@ -171,10 +188,17 @@ const UserDialog = ({ isOpen, userSelectedId, onClose }: { isOpen?: boolean; use
                   </Button>
                 </div>
               </div>
+
+              <div className="field-wrapper">
+                <Label htmlFor="role" className="block mb-1">
+                  Cargo
+                </Label>
+                <RoleSelect selectedRoleId={roleId} setSelectedRoleId={setRoleId} />
+              </div>
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="dialog-footer">
             <DialogClose asChild>
               <Button type="button" onClick={handleClose}>
                 Cancelar

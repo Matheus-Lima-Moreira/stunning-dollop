@@ -8,8 +8,38 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
+  id          Int     @id @default(autoincrement())
+  name        String
+  email       String  @unique
+  password    String
+  role        Role    @relation(fields: [roleId], references: [id])
+  roleId      Int     @map("role_id")
+  avatarUrl   String? @map("avatar_url")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  
+  users User[]
+  permissions Permission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          Int     @id @default(autoincrement())
+  name        String
+  role        Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId      Int     @map("role_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("permissions")
 }

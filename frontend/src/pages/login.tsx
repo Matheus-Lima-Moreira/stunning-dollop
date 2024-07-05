@@ -46,11 +46,11 @@ function Login() {
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">E-mail</Label>
+            <Label htmlFor="email" className="block mb-1">E-mail</Label>
             <Input id="email" type="email" placeholder="email@example.com" required value={email} onChange={handleEmailChange} />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Senha</Label>
+            <Label htmlFor="password" className="block mb-1">Senha</Label>
             <div className="relative">
               <Input id="password" type={passwordVisible ? "text" : "password"} required value={password} onChange={handlePasswordChange} className="!pr-11" />
               <Button className="adornment-end absolute right-0 top-0 hover:bg-transparent bg-transparent text-inherit size-11 h-[2.5rem]" type="button" size="sm" onClick={togglePasswordVisibility}>

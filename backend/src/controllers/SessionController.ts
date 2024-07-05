@@ -28,6 +28,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       user
     });
   } catch (error) {
+    logger.error(error);
     return res.status(401).json({ message: "Credenciais inválidas." });
   }
 };

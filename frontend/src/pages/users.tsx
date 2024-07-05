@@ -5,15 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import UserDialog from "@/components/dialogs/userDialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
-
-interface Users {
-  id: number;
-  name: string;
-  email: string;
-}
+import TableRowSkeleton from "@/components/TableRowSkeleton";
 
 const Users = () => {
   const [userSelectedId, setUserSelectedId] = useState(0);
@@ -50,12 +44,6 @@ const Users = () => {
     },
   });
 
-  useEffect(() => {
-    if (status === "error") {
-      toast({ title: error?.message });
-    }
-  }, [status]);
-
   const handleDelete = async (id: number) => {
     deleteUser(id);
   };
@@ -64,6 +52,12 @@ const Users = () => {
     setUserSelectedId(id);
     setOpenUserDialog(true);
   };
+
+  useEffect(() => {
+    if (status === "error") {
+      toast({ title: error?.message });
+    }
+  }, [status]);
 
   return (
     <div className="user-list">
@@ -86,31 +80,19 @@ const Users = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-center w-[100px]">ID</TableHead>
+            {/* <TableHead className="text-center w-[100px]">ID</TableHead> */}
             <TableHead className="text-center">Nome</TableHead>
             <TableHead className="text-center">E-mail</TableHead>
+            <TableHead className="text-center">Cargo</TableHead>
             <TableHead className="text-center">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading && (
-            <TableRow>
-              <TableCell>
-                <Skeleton className="h-4 w-[50px] ml-auto mr-auto" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-[50px] ml-auto mr-auto" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-[50px] ml-auto mr-auto" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-[50px] ml-auto mr-auto" />
-              </TableCell>
-            </TableRow>
+            <TableRowSkeleton columns={4} />
           )}
 
-          {!isLoading && users.length === 0 && (
+          {!isLoading && users?.length === 0 && (
             <TableRow>
               <TableCell colSpan={4} className="text-center">
                 Nenhum usuário encontrado.
@@ -119,12 +101,15 @@ const Users = () => {
           )}
 
           {!isLoading &&
-            users.length > 0 &&
-            users.map((user: Users) => (
+            users?.length > 0 &&
+            users?.map((user: Users) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.id}</TableCell>
+                {/* <TableCell className="font-medium">{user.id}</TableCell> */}
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  {user.role.name}
+                </TableCell>
                 <TableCell>
                   <div className="table-actions">
                     <Button className="edit-button" type="button" onClick={() => handleEdit(user.id)}>

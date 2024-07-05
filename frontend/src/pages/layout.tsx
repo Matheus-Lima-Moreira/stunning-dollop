@@ -1,4 +1,4 @@
-import { House, LogOut, Moon, SquareUser, Sun, User2 } from "lucide-react";
+import { House, LogOut, Moon, SquareUser, Sun, User2, UserRoundCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
@@ -23,6 +23,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
         return "Usuários";
       case "/profile":
         return "Minha Conta";
+      case "/roles":
+        return "Cargos";
       default:
         return "";
     }
@@ -60,15 +62,24 @@ const Layout = ({ children }: { children: ReactNode }) => {
                 Usuários
               </TooltipContent>
             </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className={`rounded-lg ${location.pathname === "/roles" ? "bg-muted" : ""}`} aria-label="Cargos" onClick={() => navigate("/roles")}>
+                  <UserRoundCog className="size-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={5}>
+                Cargos
+              </TooltipContent>
+            </Tooltip>
           </nav>
 
-          <nav className="mt-auto grid gap-1 p-2">          
+          <nav className="mt-auto grid gap-1 p-2">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" className="mt-auto rounded-lg" aria-label="Modo Escuro" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-                  {
-                    theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />
-                  }
+                  {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>

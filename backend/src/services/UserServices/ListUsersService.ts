@@ -9,6 +9,13 @@ const ListUsersService = async (userLoggedInId?: number): Promise<User[]> => {
         id: {
           not: userLoggedInId
         }
+      },
+      include: {
+        role: {
+          include: {
+            permissions: {}
+          }
+        }
       }
     }
   );

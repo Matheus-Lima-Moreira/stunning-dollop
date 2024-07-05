@@ -5,10 +5,11 @@ interface IUpdateUser {
   name: string;
   email: string;
   password: string;
+  roleId: number;
 }
 
 const UpdateUserService = async (userData: IUpdateUser) => {
-  const { id, name, email, password } = userData;
+  const { id, name, email, password, roleId } = userData;
 
   const userUpdated = await prisma.user.update({
     where: {
@@ -17,7 +18,15 @@ const UpdateUserService = async (userData: IUpdateUser) => {
     data: {
       name,
       email,
-      password
+      password,
+      roleId
+    },
+    include: {
+      role: {
+        include: {
+          permissions: true
+        }
+      }
     }
   });
 

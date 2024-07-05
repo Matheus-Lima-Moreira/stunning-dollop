@@ -6,8 +6,9 @@ import Layout from "@/pages/layout";
 import Home from "@/pages/home";
 import { ThemeProvider } from "@/context/Theme/ThemeContext";
 import { Toaster } from "@/components/ui/toaster";
-import NotFound from "@/pages/notFound";
 import MyAccount from "@/pages/myAccount";
+import NotFound from "@/pages/notFound";
+import Roles from "@/pages/roles";
 
 const Routes = () => {
   return (
@@ -33,6 +34,15 @@ const Routes = () => {
               element={
                 <Layout>
                   <Users />
+                </Layout>
+              }
+            />
+
+            <Route
+              path="/roles"
+              element={
+                <Layout>
+                  <Roles />
                 </Layout>
               }
             />

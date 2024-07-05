@@ -1,9 +1,9 @@
-.users-wrapper {
+.roles-wrapper {
   display: flex;
   justify-content: space-between;
 }
 
-.user-actions {
+.role-actions {
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -11,7 +11,7 @@
   margin-left: auto;
 }
 
-.user-list {
+.role-list {
   display: flex;
   flex-direction: column;
   gap: 15px;

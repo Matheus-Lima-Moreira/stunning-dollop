@@ -14,6 +14,13 @@ const AuthUserService = async (email: string, password: string): Promise<Respons
     where: {
       email,
       password
+    },
+    include: {
+      role: {
+        include: {
+          permissions: true
+        }
+      }
     }
   });
 

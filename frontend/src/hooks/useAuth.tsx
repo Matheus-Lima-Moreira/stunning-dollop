@@ -84,7 +84,6 @@ const useAuth = () => {
 
       localStorage.setItem("token", JSON.stringify(data.token));
       api.defaults.headers.Authorization = `Bearer ${data.token}`;
-      console.log("data.user", data.user);
 
       setUser(data.user);
       setIsAuth(true);
@@ -125,7 +124,7 @@ const useAuth = () => {
     loading,
     handleLogin,
     handleLogout,
-    setUser
+    setUser,
   };
 };
 

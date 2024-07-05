@@ -4,13 +4,15 @@ import ShowUserService from "../services/UserServices/ShowUserService";
 import CreateUserService from "../services/UserServices/CreateUserService";
 import UpdateUserService from "../services/UserServices/UpdateUserService";
 import DestroyUserService from "../services/UserServices/DestroyUserService";
+import { logger } from "../utils/logger";
 
-export const index = async (req: Request, res: Response): Promise<Response> => {  
+export const index = async (req: Request, res: Response): Promise<Response> => {
   try {
     const users = await ListUsersService(req.session.user?.id);
 
     return res.json(users);
   } catch (error: any) {
+    logger.error(error);
     return res.status(500).json({ error: "Erro interno, por favor entre em contato com o suporte" });
   }
 };
@@ -34,22 +36,26 @@ export const show = async (req: Request, res: Response): Promise<Response> => {
 };
 
 export const store = async (req: Request, res: Response): Promise<Response> => {
-  const { name, email, password } = req.body;
+  const { name, email, password, roleId } = req.body;
 
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
-    return res.status(400).json({ error: "Nome fornecido é inválido" });
+    return res.status(400).json({ error: "Nome fornecido é inválido." });
   }
 
   if (!email || typeof email !== 'string' || !/\S+@\S+\.\S+/.test(email)) {
-    return res.status(400).json({ error: "E-mail fornecido é inválido" });
+    return res.status(400).json({ error: "E-mail fornecido é inválido." });
   }
 
   if (!password || typeof password !== 'string' || password.length < 6) {
     return res.status(400).json({ error: "Senha fornecida é inválida. A senha deve ter pelo menos 6 caracteres." });
   }
 
+  if (!roleId || isNaN(Number(roleId))) {
+    return res.status(400).json({ error: "ID do cargo fornecido é inválido." });
+  }
+
   try {
-    const userCreated = await CreateUserService({ name, email, password });
+    const userCreated = await CreateUserService({ name, email, password, roleId });
 
     return res.status(201).json({
       message: "Usuário criado com sucesso!",
@@ -62,7 +68,7 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
 
 export const update = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;
-  const { name, email, password } = req.body;
+  const { name, email, password, roleId } = req.body;
 
   if (!id || isNaN(Number(id))) {
     return res.status(400).json({ error: "ID fornecido é inválido" });
@@ -80,12 +86,17 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
     return res.status(400).json({ error: "Senha fornecida é inválida. A senha deve ter pelo menos 6 caracteres." });
   }
 
+  if (!roleId || isNaN(Number(roleId))) {
+    return res.status(400).json({ error: "ID do cargo fornecido é inválido." });
+  }
+
   try {
     const userUpdated = await UpdateUserService({
       id,
       name,
       email,
-      password
+      password,
+      roleId
     });
 
     if (!userUpdated) {
