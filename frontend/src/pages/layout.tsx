@@ -1,15 +1,17 @@
-import { House, LogOut, Moon, SquareUser, Sun, User2, UserRoundCog } from "lucide-react";
+import { ChevronLeft, House, LogOut, Menu, Moon, SquareUser, Sun, User2, UserRoundCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import { useAuthContext } from "@/context/Auth/AuthContext";
+import RestrictAccess from "@/components/RestrictAccess";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const { handleLogout, isAuth, loading } = useAuthContext();
+  const [isHideBar, setIsHideBar] = useState(false);
   const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
 
@@ -30,15 +32,23 @@ const Layout = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const toggleHideBar = () => {
+    setIsHideBar(!isHideBar);
+  };
+
   useEffect(() => {
     if (!isAuth && !loading) navigate("/login");
   }, [isAuth, loading]);
 
   return (
     <TooltipProvider>
-      <div className="grid h-screen w-full pl-[56px]">
-        <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
-          <div className="border-b p-2 h-[57px]">{/*  */}</div>
+      <div className={`grid h-screen w-full ${!isHideBar ? "pl-[56px]" : ""}`}>
+        <aside id="aside-bar" className={`inset-y fixed  left-0 z-20 flex h-full flex-col border-r ${isHideBar ? "-translate-x-full" : "translate-x-0"} bg-background transition-transform duration-300`}>
+          <div className="border-b p-2 h-[57px]">
+            <Button variant="ghost" size="icon" onClick={() => toggleHideBar()} aria-label="Esconder Barra Lateral">
+              <ChevronLeft />
+            </Button>
+          </div>
 
           <nav className="grid gap-1 p-2">
             <Tooltip>
@@ -63,16 +73,18 @@ const Layout = ({ children }: { children: ReactNode }) => {
               </TooltipContent>
             </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className={`rounded-lg ${location.pathname === "/roles" ? "bg-muted" : ""}`} aria-label="Cargos" onClick={() => navigate("/roles")}>
-                  <UserRoundCog className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Cargos
-              </TooltipContent>
-            </Tooltip>
+            <RestrictAccess neededPermissions={["LIST_ROLES"]}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className={`rounded-lg ${location.pathname === "/roles" ? "bg-muted" : ""}`} aria-label="Cargos" onClick={() => navigate("/roles")}>
+                    <UserRoundCog className="size-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" sideOffset={5}>
+                  Cargos
+                </TooltipContent>
+              </Tooltip>
+            </RestrictAccess>
           </nav>
 
           <nav className="mt-auto grid gap-1 p-2">
@@ -111,8 +123,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
           </nav>
         </aside>
 
-        <div className="flex flex-col overflow-auto">
-          <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
+        <div id="content" className="flex flex-col overflow-auto">
+          <header className={`sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background ${isHideBar ? "px-2" : "px-4"}`}>
+            {isHideBar && (
+              <Button variant="ghost" size="icon" onClick={() => toggleHideBar()} aria-label="Mostrar Barra Lateral">
+                <Menu />
+              </Button>
+            )}
+
             <h1 className="text-xl font-semibold">{getRouteName()}</h1>
           </header>
 

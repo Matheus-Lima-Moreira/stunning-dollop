@@ -19,7 +19,7 @@ const RolePermissionsDialog = ({ isOpen, roleSelectedId, onClose }: { isOpen?: b
     status,
     error,
   } = useQuery({
-    queryKey: ["show-role", roleSelectedId],
+    queryKey: ["show-role-permissions", roleSelectedId],
     queryFn: async () => {
       const { data } = await api.get(`/roles/${roleSelectedId}`);
       return data;
