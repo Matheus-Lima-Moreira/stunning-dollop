@@ -50,7 +50,7 @@ const useAuth = () => {
 
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
-        api.defaults.headers.Authorization = "";
+        api.defaults.headers.Authorization = null;
         setIsAuth(false);
       }
 
@@ -107,7 +107,10 @@ const useAuth = () => {
       await api.delete("/logout");
 
       localStorage.removeItem("token");
-      api.defaults.headers.Authorization = "";
+      api.defaults.headers.Authorization = null;
+      
+      setIsAuth(false);
+      setUser(null);
 
       navigate("/login");
 

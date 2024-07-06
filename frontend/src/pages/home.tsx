@@ -1,8 +1,13 @@
+import { useAuthContext } from "@/context/Auth/AuthContext";
 
 const Home = () => {
-  return (
-    <div></div>
-  )
-}
+  const { user } = useAuthContext();
 
-export default Home
+  return (
+    <div>
+      <h1>Bem-vindo, {user?.name}!</h1>
+    </div>
+  );
+};
+
+export default Home;

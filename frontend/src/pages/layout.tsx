@@ -4,12 +4,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ReactNode, useEffect } from "react";
-import useAuth from "@/hooks/useAuth";
 import { useTheme } from "@/context/Theme/ThemeContext";
+import { useAuthContext } from "@/context/Auth/AuthContext";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
-  const { handleLogout, isAuth, loading } = useAuth();
+  const { handleLogout, isAuth, loading } = useAuthContext();
   const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
 

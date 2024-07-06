@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { AuthContext } from "@/context/Auth/AuthContext";
+import { useAuthContext } from "@/context/Auth/AuthContext";
 import api from "@/services/api";
 import { Label } from "@radix-ui/react-label";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const MyAccount = () => {
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser } = useAuthContext();
   const [userId, setUserId] = useState(user?.id || 0);
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -57,7 +57,6 @@ const MyAccount = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log({ id: userId, name, email, password, roleId: userRoleId });
     updateMyUser({ id: userId, name, email, password, roleId: userRoleId });
   };
 
